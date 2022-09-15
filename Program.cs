@@ -1,30 +1,23 @@
-using OptionsPatternNetCore.Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using OptionsPattern;
 
-var builder = WebApplication.CreateBuilder(args);
+
+IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((builder, services) =>
+    {
+        services
+        .Configure<DbConnectionConfiguration>(builder.Configuration.GetSection(nameof(DbConnectionConfiguration)))
+        .AddSingleton<DbSettings>();
+    })
+    .Build();
+
+DbSettings db = host.Services.GetService<DbSettings>();
+db.DoSomething();
 
 
 
-// Add services to the container.
-builder.Services.Configure<DbConnectionConfiguration>(builder.Configuration.GetSection(nameof(DbConnectionConfiguration)));
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
