@@ -1,35 +1,51 @@
-﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OptionsPattern
+﻿namespace OptionsPattern
 {
     public class DbSettings
     {
-        private readonly DbConnectionConfiguration _options;
-        private readonly DbConnectionConfiguration _optionsSnapshot;
+        private readonly IWritableOptions<DbConnectionConfiguration> _options;
 
-
-        public DbSettings(IOptions<DbConnectionConfiguration> options,
-            IOptionsSnapshot<DbConnectionConfiguration> optionsSnapshot)
+        public DbSettings(IWritableOptions<DbConnectionConfiguration> options)
         {
-            _options = options.Value;
-            _optionsSnapshot = optionsSnapshot.Value;
+            _options = options;
         }
 
-        public void DoSomething()
+        public async void DoSomething()
         {
 
             var iOptions = $"Values at Application Start:\n" +
-                   $"{_options.Server}\n" +
-                   $"{_options.IpAddress}\n" +
-                   $"{_options.User}\n" +
-                   $"{_options.Password}";
+                   $"{_options.Value.Server}\n" +
+                   $"{_options.Value.IpAddress}\n" +
+                   $"{_options.Value.User}\n" +
+                   $"{_options.Value.Password}\n";
 
-            File.WriteAllText("WriteText.txt", iOptions);
+            Console.WriteLine(iOptions);
+            Console.WriteLine("Write DB:");
+            var db = Console.ReadLine();
+            Console.WriteLine("Write Ip:");
+            var ip = Console.ReadLine();
+            Console.WriteLine("Write User:");
+            var user = Console.ReadLine();
+            Console.WriteLine("Write Password:");
+            var password = Console.ReadLine();
+
+            await _options.Update(opt =>
+            {
+                opt.Server = db;
+                opt.IpAddress = ip;
+                opt.User = user;
+                opt.Password = password;
+            });
+
+            iOptions = $"\nValues Updated:\n" +
+                $"{_options.Value.Server}\n" +
+                $"{_options.Value.IpAddress}\n" +
+                $"{_options.Value.User}\n" +
+                $"{_options.Value.Password}\n";
+
+            Console.WriteLine(iOptions);
+
+
+            Console.ReadLine();
         }
     }
 }

@@ -7,17 +7,10 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((builder, services) =>
     {
         services
-        .Configure<DbConnectionConfiguration>(builder.Configuration.GetSection(nameof(DbConnectionConfiguration)))
-        .AddSingleton<DbSettings>();
+        .ConfigureWritable<DbConnectionConfiguration>(builder.Configuration.GetSection(nameof(DbConnectionConfiguration)));
     })
     .Build();
 
-DbSettings db = host.Services.GetService<DbSettings>();
+DbSettings db = host.Services.GetRequiredService<DbSettings>();
 db.DoSomething();
-
-
-
-
-
-
 
