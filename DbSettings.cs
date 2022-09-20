@@ -1,15 +1,19 @@
-﻿namespace OptionsPattern
+﻿using Microsoft.Extensions.Configuration;
+
+namespace OptionsPattern
 {
     public class DbSettings
     {
+        private IConfigurationRoot configRoot { get; set; }
         private readonly IWritableOptions<DbConnectionConfiguration> _options;
 
-        public DbSettings(IWritableOptions<DbConnectionConfiguration> options)
+        public DbSettings(IWritableOptions<DbConnectionConfiguration> options, IConfiguration con)
         {
             _options = options;
+            configRoot = con as IConfigurationRoot;
         }
 
-        public async void DoSomething()
+        public async Task ChangeOptions()
         {
 
             var iOptions = $"Values at Application Start:\n" +
@@ -36,16 +40,20 @@
                 opt.Password = password;
             });
 
-            iOptions = $"\nValues Updated:\n" +
-                $"{_options.Value.Server}\n" +
-                $"{_options.Value.IpAddress}\n" +
-                $"{_options.Value.User}\n" +
-                $"{_options.Value.Password}\n";
+            configRoot.Reload();
+
+            ShowOptions();
+        }
+
+        public void ShowOptions()
+        {
+            var iOptions = $"\nValues Updated:\n" +
+               $"{_options.Value.Server}\n" +
+               $"{_options.Value.IpAddress}\n" +
+               $"{_options.Value.User}\n" +
+               $"{_options.Value.Password}\n";
 
             Console.WriteLine(iOptions);
-
-
-            Console.ReadLine();
         }
     }
 }

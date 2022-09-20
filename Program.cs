@@ -11,6 +11,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
+
 DbSettings db = host.Services.GetRequiredService<DbSettings>();
-db.DoSomething();
+db.ChangeOptions();
 
