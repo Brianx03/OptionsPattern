@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace OptionsPattern
 {
     public interface IWritableOptions<out T> : IOptionsSnapshot<T> where T : class, new()
     {
-        Task Update(Action<T> applyChanges);
+        void Update(Action<T> applyChanges, IConfigurationRoot configRoot);
     }
 }

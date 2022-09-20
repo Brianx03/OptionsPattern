@@ -32,15 +32,13 @@ namespace OptionsPattern
             Console.WriteLine("Write Password:");
             var password = Console.ReadLine();
 
-            await _options.Update(opt =>
+            _options.Update(opt =>
             {
                 opt.Server = db;
                 opt.IpAddress = ip;
                 opt.User = user;
                 opt.Password = password;
-            });
-
-            configRoot.Reload();
+            },configRoot);
 
             ShowOptions();
         }

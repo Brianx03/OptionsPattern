@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -27,7 +28,7 @@ namespace OptionsPattern
         public T Value => _options.CurrentValue;
         public T Get(string name) => _options.Get(name);
 
-        public async Task Update(Action<T> applyChanges)
+        public void Update(Action<T> applyChanges, IConfigurationRoot configRoot)
         {
             var fileProvider = _environment.ContentRootFileProvider;
             var fileInfo = fileProvider.GetFileInfo(_file);
@@ -41,6 +42,8 @@ namespace OptionsPattern
 
             jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
             File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
+
+            configRoot.Reload();
         }
     }
 }

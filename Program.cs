@@ -8,6 +8,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services
         .ConfigureWritable<DbConnectionConfiguration>(builder.Configuration.GetSection(nameof(DbConnectionConfiguration)));
+        services
+        .AddSingleton<DbSettings>();
     })
     .Build();
 

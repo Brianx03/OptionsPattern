@@ -19,7 +19,6 @@ namespace OptionsPattern
                 var options = provider.GetService<IOptionsMonitor<T>>();
                 return new WritableOptions<T>(environment, options, section.Key, file);
             });
-            services.AddSingleton<DbSettings>();
         }
     }
 }
