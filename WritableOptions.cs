@@ -8,17 +8,20 @@ namespace OptionsPattern
 {
     public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
     {
+        private readonly IConfigurationRoot _configRoot;
         private readonly IHostingEnvironment _environment;
         private readonly IOptionsMonitor<T> _options;
         private readonly string _section;
         private readonly string _file;
 
         public WritableOptions(
+            IConfigurationRoot configRoot,
             IHostingEnvironment environment,
             IOptionsMonitor<T> options,
             string section,
             string file)
         {
+            _configRoot = configRoot;
             _environment = environment;
             _options = options;
             _section = section;
@@ -28,7 +31,7 @@ namespace OptionsPattern
         public T Value => _options.CurrentValue;
         public T Get(string name) => _options.Get(name);
 
-        public void Update(Action<T> applyChanges, IConfigurationRoot configRoot)
+        public void Update(Action<T> applyChanges)
         {
             var fileProvider = _environment.ContentRootFileProvider;
             var fileInfo = fileProvider.GetFileInfo(_file);
@@ -43,7 +46,7 @@ namespace OptionsPattern
             jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
             File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
 
-            configRoot.Reload();
+            _configRoot.Reload();
         }
     }
 }

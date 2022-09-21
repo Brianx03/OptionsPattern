@@ -9,6 +9,7 @@ namespace OptionsPattern
     {
         public static void ConfigureWritable<T>(
             this IServiceCollection services,
+            IConfigurationRoot configRoot,
             IConfigurationSection section,
             string file = "appsettings.json") where T : class, new()
         {
@@ -17,7 +18,7 @@ namespace OptionsPattern
             {
                 var environment = provider.GetService<IHostingEnvironment>();
                 var options = provider.GetService<IOptionsMonitor<T>>();
-                return new WritableOptions<T>(environment, options, section.Key, file);
+                return new WritableOptions<T>(configRoot,environment, options, section.Key, file);
             });
         }
     }

@@ -7,10 +7,9 @@ namespace OptionsPattern
         private IConfigurationRoot configRoot { get; set; }
         private readonly IWritableOptions<DbConnectionConfiguration> _options;
 
-        public DbSettings(IWritableOptions<DbConnectionConfiguration> options, IConfiguration con)
+        public DbSettings(IWritableOptions<DbConnectionConfiguration> options)
         {
             _options = options;
-            configRoot = con as IConfigurationRoot;
         }
 
         public async Task ChangeOptions()
@@ -38,7 +37,7 @@ namespace OptionsPattern
                 opt.IpAddress = ip;
                 opt.User = user;
                 opt.Password = password;
-            },configRoot);
+            });
 
             ShowOptions();
         }
